@@ -46,6 +46,40 @@ ytTweaks.tweaks.push(function (settings) {
     }
     `;
 
+    if (settings.defaultSortingOfComments) {
+        document.addEventListener('yt-action', sort, true);
+
+        function sort(e) {
+            if (e.detail.actionName == 'yt-service-request' && e.detail.args[0].tagName == 'YTD-CONTINUATION-ITEM-RENDERER' && !e.detail.args[0].previousElementSibling) {
+                const data = atob(e.detail.args[1].continuationCommand.token.replace('%3D', '').replace(/.*-/, ''));
+
+                if (data.includes('comments-section')) {
+                    const videoId = location.pathname.includes('/live/') ?
+                        location.pathname.replace('/live/', '') :
+                        new URLSearchParams(location.search).get('v');
+
+                    e.detail.args[1].continuationCommand.token = data.includes('engagement-panel') ?
+                        btoa(`\x12\r\x12\v${videoId}\x18\x0628"\x11"\v${videoId}0\x01x\x020\x01B!engagement-panel-comments-section`) :
+                        btoa(`\x12\r\x12\v${videoId}\x18\x062%"\x11"\v${videoId}0\x01x\x02B\x10comments-section`);
+                }
+
+                else if (data.includes('FEcomment_shorts_web_top_level')) {
+                    e.detail.args[1].continuationCommand.token = '4qmFsgJ-' + btoa(`\x12\x1EFEcomment_shorts_web_top_level\x1A\\${btoa(`ª\x03B"\x14"\v${location.pathname.replace('/shorts/', '')}0\x01x\x02È\x01\x000\x01B(shorts-engagement-panel-comments-section`)}`);
+                }
+
+                else if (data.includes('FEcomment_post_detail_page_web_top_level')) {
+                    e.detail.args[1].continuationCommand.token = btoa(`â©\x85²\x02¹\x01\x12(FEcomment_post_detail_page_web_top_level\x1A\x8C\x01${btoa(`\x12\x05postsª\x03_"I0\x01x\x02È\x01\x00ê\x01$${location.pathname.replace('/post/', '')}ò\x01\x18UCETjsiWHrAHyADOih7ACwHw8\x01B\x10comments-section`).replace('/', '_')}`);
+                }
+            }
+        }
+
+        ytTweaks.defaultSortingOfComments = {
+            storageChanged: function () {
+                document.removeEventListener('yt-action', sort, true);
+            }
+        };
+    }
+
     if (settings.autoSidebarComments || settings.toggleSidebarCommentsHotkey) {
         const sidebarComments = '#secondary.ytd-watch-flexy [target-id="engagement-panel-comments-section"]';
 
