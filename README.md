@@ -23,6 +23,7 @@ A collection of tweaks for hiding Shorts, disabling auto-dubbing, disabling 'Vid
 - Homepage: Hide topic bar and Latest YouTube posts
 - Auto-expand comments
 - Show comments in sidebar
+- Comments sorted by newest by default
 - Like/dislike hotkeys
 - Auto-expand video description
 - Default video quality / Auto HD/4k/8k
@@ -41,6 +42,7 @@ A collection of tweaks for hiding Shorts, disabling auto-dubbing, disabling 'Vid
 - Disable auto-play next video in playlists
 - Disable number keys shortcuts
 - Auto-scroll Shorts
+- Disable/stop Shorts looping
 - Pin video while scrolling
 - Show video remaining time
 - Hide video controls on pause
