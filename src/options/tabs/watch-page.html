@@ -39,7 +39,7 @@
   </label>
 </section>
 <section>
-  <h4>Comments</h4>
+  <h4>Comments section</h4>
   <label>
     <span>Auto-expand long comments</span>
     <input type="checkbox" id="autoExpandComments">
@@ -54,27 +54,40 @@
       </ul>
     </button>
   </label>
-  <label>
-    <span>Show comments in sidebar</span>
+  <label section="header">
+    <h4>Sidebar</h4>
+  </label>
+  <label section="content">
+    <span>Show comments section</span>
     <input type="checkbox" id="autoSidebarComments">
   </label>
-  <label>
-    <span>Toggle comments in sidebar</span>
+  <label section="content">
+    <span>Toggle comments section</span>
     <button class="keyBinder openPopup" placeholder="Set hotkey" id="toggleSidebarCommentsHotkey">
     </button>
     <button class="removeSetting">
     </button>
   </label>
-  <label>
-    <span>Sidebar comments: Height (%)</span>
+  <label section="content">
+    <span>Height (%)</span>
     <input type="number" id="scHeight" min="0" max="100" step="1" value="100">
     <button class="numInputBtn minus iconButton"></button>
     <button class="numInputBtn plus iconButton"></button>
   </label>
-  <label>
-    <span>Sidebar comments: Use player height instead</span>
+  <label section="content">
+    <span>Use player height instead</span>
     </span>
     <input type="checkbox" id="scUsePlayerHeight">
+  </label>
+  <label section="content">
+    <span>Hide header</span>
+    </span>
+    <input type="checkbox" id="scHideHeader">
+  </label>
+  <label section="content">
+    <span>Hide comment field</span>
+    </span>
+    <input type="checkbox" id="scHideCommentField">
   </label>
 </section>
 <section>
