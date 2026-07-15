@@ -208,10 +208,18 @@ main {
     border-bottom-left-radius: 0;
 }
 
-.tabHeading.selected {
+html:not(.searchMode) .tabHeading.selected {
     color: #fff;
     font-weight: 500;
     background: var(--accent) !important;
+}
+
+.searchMode .tabContent {
+    display: block !important;
+}
+
+.searchMode .tempHeading + h4 {
+    display: none;
 }
 
 button,
@@ -573,18 +581,4 @@ textarea {
     border: none;
     border-radius: 0;
     max-height: initial;
-}
-
-.noResults {
-    position: fixed;
-    font-size: 22px;
-    text-align: center;
-    align-content: center;
-    inset: 0;
-    z-index: -1;
-    opacity: 0.38;
-}
-
-section:not(.hidden)~.noResults {
-    display: none !important;
 }

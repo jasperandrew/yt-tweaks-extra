@@ -275,6 +275,8 @@ function handleTabClick(button) {
 
     document.querySelector('.tabContent:not(.hidden)').classList.add('hidden');
     document.querySelector(`.tabContent:nth-child(${[...button.parentElement.children].indexOf(button) + 1}`).classList.remove('hidden');
+
+    clearSearchBar(document.querySelector('.search'));
 }
 
 function exportSettings(button) {
@@ -291,15 +293,18 @@ function exportSettings(button) {
 
 function handleSearch(input) {
     document.documentElement.classList.remove('searchMode');
-    let els = document.querySelectorAll(`label, section`);
-    for (const el of els) el.classList.remove('hidden', 'tprBorder');
+    let els = document.querySelectorAll('label, section');
+    for (const el of els) {
+        el.classList.remove('hidden', 'tprBorder');
+        if (el.children[0].matches('.tempHeading')) el.children[0].remove();
+    }
 
     if (input?.value) {
         document.documentElement.classList.add('searchMode');
         const matcher = new RegExp(input.value.replaceAll(' ', '.*'), 'i');
         for (const el of els) el.classList.add('hidden');
 
-        els = document.querySelectorAll(`section > h4, label`);
+        els = document.querySelectorAll('section > h4, label');
         for (let i = 0; i < els.length; i++) {
             if (matcher.test(els[i].textContent)) unhideSearcRelatedEl(els[i], i);
         }
@@ -308,13 +313,22 @@ function handleSearch(input) {
     }
 
     function unhideSearcRelatedEl(el, index) {
-        el.closest('section').classList.remove('hidden');
+        const section = el.closest('section')
+        section.classList.remove('hidden');
+
+        if (!(section.children[0].matches('.tempHeading'))) {
+            const tab = document.querySelector(`.tabHeading:nth-child(${[...el.closest('main').children].indexOf(el.closest('.tabContent')) + 1}`).textContent;
+            const h4 = document.createElement('H4');
+            h4.classList.add('tempHeading');
+            h4.textContent = tab + (section.children[0].tagName == 'H4' ? ' > ' + section.children[0].textContent : '');
+            section.prepend(h4);
+        }
 
         if (el.tagName == 'H4') {
             index++;
 
             for (; ;) {
-                if (els[index]?.tagName == 'LABEL') {
+                if (section.contains(els[index])) {
                     els[index].classList.remove('hidden');
                     els[index].parentElement.classList.remove('hidden');
                     index++
