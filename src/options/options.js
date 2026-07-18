@@ -41,6 +41,15 @@ chrome.storage.local.get().then(function (settings) {
     }
 });
 
+// Update entries that are changed from outside the settings page.
+chrome.storage.onChanged.addListener(function (changes) {
+    for (const key in changes) {
+        if (changes[key].newValue !== undefined) {
+            restoreSetting(document.getElementById(key), key, { [key]: changes[key].newValue });
+        }
+    }
+});
+
 document.addEventListener('click', function (e) {
     let button;
 
