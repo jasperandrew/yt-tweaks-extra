@@ -33,6 +33,7 @@
         "tweaks/player.js",
         "tweaks/convert-shorts.js",
         "tweaks/speed-control.js",
+        "tweaks/comments-toggle.js",
         "tweaks/watch-page.js",
         "tweaks/search-page.js",
         "tweaks/header-bar.js",
