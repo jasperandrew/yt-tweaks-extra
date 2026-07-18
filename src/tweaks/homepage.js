@@ -1,4 +1,84 @@
 ytTweaks.tweaks.push(function (settings) {
+    if (settings.redirectHomepage && window.top == window) {
+        function endpointUrl(endpoint) {
+            return endpoint?.commandMetadata?.webCommandMetadata?.url;
+        }
+
+        function isHome(url) {
+            try {
+                const u = new URL(url, location.origin);
+                return u.origin == location.origin && u.pathname == '/';
+            } catch { return false }
+        }
+
+        // Kept as a full endpoint so a captured page navigates with its metadata.
+        let destination = settings.redirectHomepageTo || {
+            "commandMetadata": {
+                "webCommandMetadata": {
+                    "url": "/feed/subscriptions",
+                    "webPageType": "WEB_PAGE_TYPE_BROWSE",
+                    "rootVe": 96368,
+                    "apiUrl": "/youtubei/v1/browse"
+                }
+            }
+        };
+
+        function navigate() {
+            const app = document.querySelector('ytd-app');
+
+            // SPA route when possible; fall back to a load before ytd-app is upgraded.
+            if (!app?.handleNavigate) {
+                location.replace(endpointUrl(destination));
+                return;
+            }
+
+            app.handleNavigate({ command: destination });
+        }
+
+        function redirectCurrent() {
+            if (isHome(location.href)) navigate();
+        }
+
+        // yt-navigate-start carries the destination while location still points
+        // at the old page, so the home page never gets a chance to render.
+        function handleNavigateStart(e) {
+            const dest = e.detail?.url || endpointUrl(e.detail?.endpoint);
+            if (dest && isHome(dest)) navigate();
+        }
+
+        function capturePage(e) {
+            const endpoint = e.detail?.endpoint;
+            const url = endpointUrl(endpoint);
+            if (!url || isHome(url)) return;
+
+            if (confirm(`Redirect the home page to this page? (${url})`)) {
+                document.removeEventListener('yt-navigate-finish', capturePage);
+                destination = endpoint;
+                document.dispatchEvent(new CustomEvent('yttwSaveSetting', {
+                    detail: { redirectHomepageTo: endpoint }
+                }));
+            }
+        }
+
+        if (settings.redirectHomepageTo === '') document.addEventListener('yt-navigate-finish', capturePage);
+
+        const listeners = [
+            [document, 'yt-navigate-start', handleNavigateStart, true],
+            [window, 'popstate', redirectCurrent],
+            [document, 'yt-navigate-finish', redirectCurrent],
+        ];
+        for (const [target, type, fn, capture] of listeners) target.addEventListener(type, fn, capture);
+
+        redirectCurrent();
+
+        ytTweaks.redirectHomepage = {
+            storageChanged: function () {
+                document.removeEventListener('yt-navigate-finish', capturePage);
+                for (const [target, type, fn, capture] of listeners) target.removeEventListener(type, fn, capture);
+            }
+        };
+    }
+
     if (settings.hideShorts) ytTweaks.sheet.textContent += `
     [page-subtype="home"] ytd-rich-section-renderer:has([is-shorts]) {
       display: none !important;
