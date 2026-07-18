@@ -80,6 +80,9 @@ ytTweaks.tweaks.push(function (settings) {
         };
     }
 
+    // Outside the gate below so turning autoSidebarComments off also removes the class.
+    document.documentElement.classList.toggle('yttw-sidebar-comments', !!settings.autoSidebarComments);
+
     if (settings.autoSidebarComments || settings.toggleSidebarCommentsHotkey) {
         const sidebarComments = '#secondary.ytd-watch-flexy [target-id="engagement-panel-comments-section"]';
 
@@ -123,8 +126,6 @@ ytTweaks.tweaks.push(function (settings) {
           --yttw-sc-hide: none;
         }
         `;
-
-        if (settings.autoSidebarComments) document.documentElement.classList.add('yttw-sidebar-comments');
 
         if (settings.toggleSidebarCommentsHotkey) {
             ytTweaks.getHotkeys()[settings.toggleSidebarCommentsHotkey] = function () {
@@ -201,6 +202,35 @@ ytTweaks.tweaks.push(function (settings) {
       display: none !important;
     }
     `;
+
+    if (settings.hideRelatedVideos) {
+        // When nothing left in the sidebar (playlist, live chat, sidebar comments tweak...), collapse
+        // it and let player/description column fill the space. Deliberately not the native theater mode.
+        const commentsShown = 'html.yttw-sidebar-comments ytd-watch-flexy:not([is-single-column])';
+        const noPanels = `ytd-watch-flexy:not(:has(#secondary :is(ytd-playlist-panel-renderer:not([hidden]), ytd-live-chat-frame:not([hidden])))):not(${commentsShown})`;
+
+        ytTweaks.sheet.textContent += `
+        ytd-watch-flexy #secondary #related {
+          display: none !important;
+        }
+
+        ${noPanels} #secondary {
+          display: none !important;
+        }
+
+        ${noPanels} :is(#primary, #columns) {
+          max-width: none !important;
+        }
+
+        ${noPanels} #primary {
+          width: 100% !important;
+        }
+        `;
+    }
+
+    // Toggling the setting nudges the player size to fit.
+    // orientationchange is the codebase standard player-relayout trigger).
+    window.dispatchEvent(new Event('orientationchange'));
 
     if (settings.hideWatchVideos3) {
         ytTweaks.sheet.textContent += `
