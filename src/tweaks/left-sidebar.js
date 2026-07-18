@@ -87,14 +87,38 @@ ytTweaks.tweaks.push(function (settings) {
     }
     `;
 
+    if (settings.hideExplore || settings.hideMoreFromYt) {
+        const markSections = function () {
+            document.querySelectorAll('ytd-guide-section-renderer').forEach(function (section) {
+                const title = section.querySelector('#guide-section-title')?.textContent.trim();
+                if (title == 'Explore') section.classList.add('yttw-guide-explore');
+                else if (title == 'More from YouTube') section.classList.add('yttw-guide-more-from-yt');
+            });
+
+            if (document.querySelector('.yttw-guide-explore') && document.querySelector('.yttw-guide-more-from-yt')) {
+                observer.disconnect();
+            }
+        };
+
+        const observer = new MutationObserver(markSections);
+        observer.observe(document.body, { childList: true, subtree: true });
+        markSections();
+
+        ytTweaks.guideSections = {
+            storageChanged: function () {
+                observer.disconnect();
+            }
+        };
+    }
+
     if (settings.hideExplore) ytTweaks.sheet.textContent += `
-    ytd-guide-section-renderer:nth-last-child(3) {
+    .yttw-guide-explore {
       display: none !important;
     }
     `;
 
     if (settings.hideMoreFromYt) ytTweaks.sheet.textContent += `
-    ytd-guide-section-renderer:nth-last-child(2) {
+    .yttw-guide-more-from-yt {
       display: none !important;
     }
     `;
