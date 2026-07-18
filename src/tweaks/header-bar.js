@@ -157,4 +157,17 @@ ytTweaks.tweaks.push(function (settings) {
             }
         };
     }
+
+    if (settings.hideVoiceSearchButton) ytTweaks.sheet.textContent += `
+    #voice-search-button {
+      display: none !important;
+    }
+    `;
+
+    if (settings.hideCreateButton) ytTweaks.sheet.textContent += `
+    ytd-masthead ytd-topbar-menu-button-renderer:has(button[aria-label="Create" i]),
+    ytd-masthead button[aria-label="Create" i] {
+      display: none !important;
+    }
+    `;
 });
