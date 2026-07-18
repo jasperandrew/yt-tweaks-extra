@@ -448,6 +448,18 @@
     </label>
   </div>
   <label>
+    <span>Speed control in player <span class="subLabel">Shows the current speed in the video control bar. Scroll to adjust, click to toggle to your default speed.</span></span>
+    <input type="checkbox" id="speedControl">
+  </label>
+  <div class="expandable">
+    <label>
+      <span>Step (x)</span>
+      <input type="number" id="speedControlStep" min="0.05" max="1" step="0.05" value="0.1">
+      <button class="numInputBtn minus iconButton"></button>
+      <button class="numInputBtn plus iconButton"></button>
+    </label>
+  </div>
+  <label>
     <span>Scroll speed over player</span>
     <input type="checkbox" id="changeSpeedOnScroll">
   </label>
