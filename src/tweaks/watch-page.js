@@ -202,6 +202,13 @@ ytTweaks.tweaks.push(function (settings) {
     }
     `;
 
+    if (settings.hideAskButton) ytTweaks.sheet.textContent += `
+    ytd-watch-metadata :is(ytd-button-renderer, yt-button-view-model, button-view-model):has(button[aria-label*="Ask" i]),
+    ytd-watch-metadata button[aria-label*="Ask" i] {
+      display: none !important;
+    }
+    `;
+
     if (settings.hideWatchVideos3) {
         ytTweaks.sheet.textContent += `
         :is(ytd-watch-flexy yt-lockup-view-model, ytd-compact-video-renderer):has(:is(
