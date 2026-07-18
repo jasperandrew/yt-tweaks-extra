@@ -32,6 +32,7 @@
         "tweaks/channel-page.js",
         "tweaks/player.js",
         "tweaks/convert-shorts.js",
+        "tweaks/speed-control.js",
         "tweaks/watch-page.js",
         "tweaks/search-page.js",
         "tweaks/header-bar.js",
