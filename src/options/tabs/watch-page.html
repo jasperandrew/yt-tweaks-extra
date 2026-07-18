@@ -1,4 +1,71 @@
 <section>
+  <h4>Auto-like</h4>
+  <label>
+    <span>Auto-like videos <span class="subLabel">Videos you already liked or disliked are never touched.</span></span>
+    <button class="selectMenu openPopup rotableArrow" id="autoLike">
+      <span>Off</span>
+      <ul>
+        <li value>Off</li>
+        <li value="subscribed">Channels you're subscribed to</li>
+        <li value="all">All videos</li>
+      </ul>
+    </button>
+  </label>
+  <div class="expandable">
+    <label>
+      <span>When</span>
+      <button class="selectMenu openPopup rotableArrow" id="autoLikeWhen">
+        <span>After watching part of the video</span>
+        <ul>
+          <li value="percent">After watching part of the video</li>
+          <li value="minutes">After a number of minutes</li>
+          <li value="instant">As soon as it starts</li>
+        </ul>
+      </button>
+    </label>
+    <div class="expandable">
+      <div class="expandable" matcher="percent">
+        <label>
+          <span>Watched (%)</span>
+          <input type="number" id="autoLikePercent" min="0" max="100" step="1" value="50">
+          <button class="numInputBtn minus iconButton"></button>
+          <button class="numInputBtn plus iconButton"></button>
+        </label>
+      </div>
+      <div class="expandable" matcher="minutes">
+        <label>
+          <span>Minutes</span>
+          <input type="number" id="autoLikeMinutes" min="0" step="1" value="10">
+          <button class="numInputBtn minus iconButton"></button>
+          <button class="numInputBtn plus iconButton"></button>
+        </label>
+      </div>
+    </div>
+    <label>
+      <span>Filter channels</span>
+      <input type="checkbox" id="autoLikeFilterChannels">
+    </label>
+    <div class="expandable">
+      <label>
+        <span>Channel list</span>
+        <button class="list openPopup" enablesearch text-placeholder="Channel name"
+          text-title="Exact, case-sensitive match" id="autoLikeChannels">
+        </button>
+      </label>
+      <label>
+        <span>Use the list to</span>
+        <button class="selectMenu openPopup rotableArrow" id="autoLikeChannelsMode">
+          <span>Never like these channels</span>
+          <ul>
+            <li value="exclude">Never like these channels</li>
+            <li value="only">Only like these channels</li>
+          </ul>
+        </button>
+      </label>
+    </div>
+  </div>
+</section>
+<section>
   <label>
     <span>Video description</span>
     <button class="selectMenu openPopup rotableArrow" id="videoDescription">
