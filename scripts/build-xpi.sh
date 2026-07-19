@@ -6,7 +6,7 @@ cd "$(dirname "$0")"
 
 python3 - <<'PY'
 import zipfile, os
-src, out = 'src', 'yt-tweaks.xpi'
+src, out = '../src', '../yt-tweaks.xpi'
 with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:
     for root, dirs, files in os.walk(src):
         dirs[:] = [d for d in dirs if not d.startswith('.')]
