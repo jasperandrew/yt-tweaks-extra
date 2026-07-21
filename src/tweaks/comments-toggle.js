@@ -139,6 +139,17 @@ ytTweaks.tweaks.push(function (settings) {
       max-height: 0 !important;
       overflow: hidden !important;
     }
+
+    /* Not related to collapsing - always on. YouTube's own comments loader
+       never fires unless the page is tall enough to scroll (confirmed via
+       devtools: with a short enough description, the page is exactly
+       viewport-height and ytd-comments stays permanently empty - 0 thread
+       renderers ever load). Padding on the parent, not margin/padding on
+       ytd-comments itself, avoids both margin-collapse and touching a box
+       YouTube's own code likely measures directly. */
+    ytd-watch-flexy div.box:has(> ytd-comments#comments) {
+      padding-bottom: 20px;
+    }
     `;
 
     observer = new MutationObserver(insert);
