@@ -62,18 +62,7 @@ function toggle() {
     save();
 }
 
-// Some layouts render the header inside #contents instead of its own #header slot.
-// Pull it back out to a sibling position so it's easier to hide the comments alone.
-// Because YouTube does dynamic rendering stuff, must run on every mutation, not just at insertion.
-function relocateHeader() {
-    const header = document.querySelector('ytd-comments#comments ytd-comments-header-renderer');
-    const contents = header?.closest('#contents');
-    if (contents) contents.before(header);
-}
-
 function insert() {
-    relocateHeader();
-
     const sortMenu = document.querySelector('ytd-comments#comments ytd-comments-header-renderer #sort-menu');
     if (!sortMenu) return;
 
@@ -113,11 +102,40 @@ ytTweaks.tweaks.push(function (settings) {
       background: rgba(128, 128, 128, .15);
     }
 
-    /* Because YouTube dynamic rendering reasons, collapse the comment list/composer
-       to zero height rather than display:none. */
-    html.yttw-comments-collapsed ytd-comments#comments ytd-item-section-renderer > #contents,
-    html.yttw-comments-collapsed ytd-comments#comments ytd-item-section-renderer > #continuations,
-    html.yttw-comments-collapsed ytd-comments#comments ytd-comment-simplebox-renderer {
+    /* Because YouTube dynamic rendering reasons, collapse to zero height rather
+       than display:none. Confirmed via devtools: ytd-comments-header-renderer
+       lives at ytd-item-section-renderer > #header, a sibling of #spinner-
+       container (the initial loading spinner), #contents (the actual threads)
+       and #continuations - not a descendant of any of those three. So exclude
+       #header specifically at that level and collapse the rest of item-
+       section-renderer's direct children as one block, rather than trying to
+       enumerate what's inside #contents/#continuations (which varies with
+       load state) or collapsing item-section-renderer itself (which would
+       take the header down with it).
+       Physically relocating the header instead of excluding it in place was
+       tried and reverted twice (this repo's own history, and again this
+       session): ytd-* elements are shadow-DOM Polymer components, and moving
+       ytd-comments-header-renderer out of its expected slot breaks its
+       rendering outright rather than just repositioning it. Zeroing
+       margin/padding/border too (not just max-height/overflow) avoids leftover
+       blank space from the collapsed section's own spacing. */
+    html.yttw-comments-collapsed ytd-comments#comments ytd-item-section-renderer > :not(#header) {
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+      max-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    /* Same idea, one level in: #title (the comment count + sort-by dropdown,
+       and our button next to it) is the only part of the header itself that
+       should stay visible while collapsed - the composer, "new comments
+       paused" message, etc. are all siblings of #title and should collapse
+       with everything else. */
+    html.yttw-comments-collapsed ytd-comments#comments ytd-comments-header-renderer > :not(#title) {
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
       max-height: 0 !important;
       overflow: hidden !important;
     }
