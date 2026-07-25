@@ -49,6 +49,7 @@ FEATURE_BRANCHES=(
     feature/hide-related-sidebar
     feature/hide-ask-button
     feature/redirect-homepage
+    feature/hide-search-bar
     tooling
     readme
 )
