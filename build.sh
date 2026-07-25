@@ -53,6 +53,7 @@ FEATURE_BRANCHES=(
     feature/redirect-homepage
     feature/hide-search-bar
     feature/compact-header-watch-only
+    feature/hide-related-endcards
     tooling
     readme
 )
