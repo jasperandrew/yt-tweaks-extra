@@ -50,6 +50,7 @@ FEATURE_BRANCHES=(
     feature/hide-ask-button
     feature/redirect-homepage
     feature/hide-search-bar
+    feature/compact-header-watch-only
     tooling
     readme
 )
