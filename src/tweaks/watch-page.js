@@ -204,10 +204,10 @@ ytTweaks.tweaks.push(function (settings) {
     `;
 
     if (settings.hideRelatedVideos) {
-        // When nothing left in the sidebar (playlist, live chat, sidebar comments tweak...), collapse
+        // When nothing left visible in the sidebar (playlist, live chat, sidebar comments tweak...), collapse
         // it and let player/description column fill the space. Deliberately not the native theater mode.
         const commentsShown = 'html.yttw-sidebar-comments ytd-watch-flexy:not([is-single-column])';
-        const noPanels = `ytd-watch-flexy:not(:has(#secondary :is(ytd-playlist-panel-renderer:not([hidden]), ytd-live-chat-frame:not([hidden])))):not(${commentsShown})`;
+        const noPanels = `ytd-watch-flexy:not(:has(#secondary :is(ytd-playlist-panel-renderer:not([hidden]), ytd-live-chat-frame:not([collapsed])))):not([live-chat-present-and-expanded]):not(${commentsShown})`;
 
         ytTweaks.sheet.textContent += `
         ytd-watch-flexy #secondary #related {
@@ -226,6 +226,29 @@ ytTweaks.tweaks.push(function (settings) {
           width: 100% !important;
         }
         `;
+
+        let secondaryObserver;
+
+        function watchSecondarySize() {
+            secondaryObserver?.disconnect();
+            const secondary = document.querySelector('#secondary');
+            if (!secondary) return;
+
+            secondaryObserver = new ResizeObserver(function () {
+                window.dispatchEvent(new Event('orientationchange'));
+            });
+            secondaryObserver.observe(secondary);
+        }
+
+        document.addEventListener('yt-navigate-finish', watchSecondarySize);
+        watchSecondarySize();
+
+        ytTweaks.hideRelatedVideos = {
+            storageChanged: function () {
+                secondaryObserver?.disconnect();
+                document.removeEventListener('yt-navigate-finish', watchSecondarySize);
+            }
+        };
     }
 
     // Toggling the setting nudges the player size to fit.
