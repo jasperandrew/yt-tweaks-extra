@@ -8,9 +8,11 @@
 #         commits, in a fixed order. Produces a fully linear history (no
 #         merge commits) every time. Assumes feature branches are already
 #         rebased onto `fixes` (`sync` does this end to end).
-# sync  - bring everything up to date after upstream's main has moved, or
-#         after a fix/* branch changes, then rebuild fixes and extra. See
-#         run_sync below for the full sequence.
+# sync      - bring everything up to date after upstream's main has moved, or
+#             after a fix/* branch changes, then rebuild fixes and extra. See
+#             run_sync below for the full sequence.
+# xpi - package `extra` into yt-tweaks.xpi, switching to it first and
+#             back afterwards regardless of the branch this was invoked from.
 #
 # If a rebase or cherry-pick (any of the three) hits a conflict git rerere
 # already has a recorded resolution for, it's resolved and staged
@@ -25,7 +27,7 @@
 # branches actually differ from myfork (by tree, not SHA) and prints the exact
 # push command for just those.
 #
-# Usage: build.sh fixes|extra|sync
+# Usage: build.sh fixes|extra|sync|xpi
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -287,6 +289,35 @@ build_fixes() { build_branch fixes upstream/main FIX_BRANCHES; }
 # history (no merge commits) every time.
 build_extra() { build_branch extra fixes FEATURE_BRANCHES; }
 
+# Packages src/ into an installable, unsigned .xpi (manifest.json at the
+# archive root). Always builds from `extra` - that's the branch meant for
+# distribution - regardless of which branch this was invoked from, then
+# switches back. Requires Firefox's xpinstall.signatures.required = false to
+# install.
+build_xpi() {
+    local start_ref
+    start_ref=$(git symbolic-ref -q --short HEAD || git rev-parse HEAD)
+
+    require_clean_worktree
+    git checkout extra 1>/dev/null
+
+    python3 - <<'PY'
+import zipfile, os
+src, out = '../src', '../yt-tweaks.xpi'
+with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:
+    for root, dirs, files in os.walk(src):
+        dirs[:] = [d for d in dirs if not d.startswith('.')]
+        for f in files:
+            if f.startswith('.'):
+                continue
+            full = os.path.join(root, f)
+            z.write(full, os.path.relpath(full, src))
+print('built', out)
+PY
+
+    git checkout "$start_ref" 1>/dev/null
+}
+
 # Bring everything up to date after upstream's main has moved, or after a
 # fix/* branch changes: rebase fix branches onto upstream/main, rebuild
 # `fixes`, rebase every feature/tooling/readme branch onto the new `fixes`,
@@ -360,8 +391,9 @@ case "${1:-}" in
     fixes) build_fixes ;;
     extra) build_extra ;;
     sync) run_sync ;;
+    xpi) build_xpi ;;
     *)
-        echo "Usage: $0 fixes|extra|sync" >&2
+        echo "Usage: $0 fixes|extra|sync|xpi" >&2
         exit 1
         ;;
 esac
