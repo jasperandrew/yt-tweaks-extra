@@ -59,3 +59,16 @@ A collection of tweaks for hiding Shorts, disabling auto-dubbing, disabling 'Vid
 - Show back to top button
 - Over 100 YouTube themes
 - Custom CSS/JavaScript
+
+### Extra Features (not included in official store version)
+- Convert Shorts to the normal video player
+- Simple, customizable playback speed controls in the player UI
+- Hide the voice search and "+Create" header buttons
+- Quickly hide/unhide the comments section
+- Auto-like videos (ported from [Taknok/youtube-auto-like](https://github.com/Taknok/youtube-auto-like))
+- Hide the related videos sidebar
+- Hide the Gemini "Ask" button
+- Redirect the home page to another page (like subscriptions)
+- Hide the search bar, or hide it only on the watch page
+- Optionally make the compact header feature only enabled on the watch page
+- Hide the suggested videos grid at the end of a video
