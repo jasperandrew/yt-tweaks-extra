@@ -2387,6 +2387,12 @@ ytTweaks.tweaks.push(function (settings) {
     }
     `;
 
+	if (settings.hideEndscreenSuggestions) ytTweaks.sheet.textContent += `
+    #movie_player .ytp-fullscreen-grid {
+    	display: none !important;
+    }
+    `;
+
 	if (settings.increaseQualityHotkey || settings.decreaseQualityHotkey || settings.highestQualityHotkey || settings.lowestQualityHotkey) {
 		const qualities = {
 			auto: 0,
