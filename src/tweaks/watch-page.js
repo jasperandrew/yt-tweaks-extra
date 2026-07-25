@@ -217,14 +217,6 @@ ytTweaks.tweaks.push(function (settings) {
         ${noPanels} #secondary {
           display: none !important;
         }
-
-        ${noPanels} :is(#primary, #columns) {
-          max-width: none !important;
-        }
-
-        ${noPanels} #primary {
-          width: 100% !important;
-        }
         `;
 
         let secondaryObserver;
