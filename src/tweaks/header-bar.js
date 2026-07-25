@@ -1,60 +1,64 @@
 ytTweaks.tweaks.push(function (settings) {
-    if (settings.compactHeaderBar) ytTweaks.sheet.textContent += `
-    :root {
-      --ytd-toolbar-height: 36px;
-    }
-  
-    ytd-feed-filter-chip-bar-renderer {
-      --ytd-rich-grid-chips-bar-top: var(--ytd-toolbar-height);
-    }
-  
-    ytd-app:not([scrolling]) {
-      --ytd-masthead-height: var(--ytd-toolbar-height) !important;
-    }
+    if (settings.compactHeaderBar) {
+        const scope = settings.compactHeaderBarWatchOnly ? 'html:has(#masthead[is-watch-page])' : ':root';
 
-    #frosted-glass.with-chipbar.ytd-app {
-      height: 92px;
+        ytTweaks.sheet.textContent += `
+        ${scope} {
+          --ytd-toolbar-height: 36px;
+
+          & ytd-feed-filter-chip-bar-renderer {
+            --ytd-rich-grid-chips-bar-top: var(--ytd-toolbar-height);
+          }
+
+          & ytd-app:not([scrolling]) {
+            --ytd-masthead-height: var(--ytd-toolbar-height) !important;
+          }
+
+          & #frosted-glass.with-chipbar.ytd-app {
+            height: 92px;
+          }
+
+          & .ytd-masthead:is(#container, #background),
+          & #header.ytd-app,
+          & ytd-masthead.shell {
+            height: var(--ytd-toolbar-height);
+          }
+
+          & #player.skeleton.theater {
+            margin-top: var(--ytd-toolbar-height);
+          }
+
+          & yt-searchbox,
+          & .ytd-searchbox:is(#search-form, #search-icon-legacy),
+          & #masthead .ytSpecButtonShapeNextHost {
+            height: 30px !important;
+          }
+
+          & yt-icon-button:is(.ytd-topbar-menu-button-renderer, .ytd-masthead, .ytd-notification-topbar-button-renderer),
+          & #masthead .ytSpecButtonShapeNextIconOnlyDefault,
+          & #guide-button.ytd-app,
+          & .ytSearchboxComponentClearButton {
+            width: 30px !important;
+            height: 30px !important;
+            padding: 3px;
+          }
+
+          & .ytSearchboxComponentSuggestionsContainer {
+            top: 30px;
+          }
+
+          & yt-icon.ytd-logo {
+            padding-top: 8px;
+            padding-bottom: 8px;
+          }
+
+          & #container.ytd-masthead,
+          & #header.ytd-app {
+            padding: 0 21px;
+          }
+        }
+        `;
     }
-  
-    .ytd-masthead:is(#container, #background),
-    #header.ytd-app,
-    ytd-masthead.shell {
-      height: var(--ytd-toolbar-height);
-    }
-  
-    #player.skeleton.theater {
-      margin-top: var(--ytd-toolbar-height);
-    }
-  
-    yt-searchbox,
-    .ytd-searchbox:is(#search-form, #search-icon-legacy),
-    #masthead .ytSpecButtonShapeNextHost {
-      height: 30px !important;
-    }
-  
-    yt-icon-button:is(.ytd-topbar-menu-button-renderer, .ytd-masthead, .ytd-notification-topbar-button-renderer),
-    #masthead .ytSpecButtonShapeNextIconOnlyDefault,
-    #guide-button.ytd-app,
-    .ytSearchboxComponentClearButton {
-      width: 30px !important;
-      height: 30px !important;
-      padding: 3px;
-    }
-  
-    .ytSearchboxComponentSuggestionsContainer {
-      top: 30px;
-    }
-  
-    yt-icon.ytd-logo {
-      padding-top: 8px;
-      padding-bottom: 8px;
-    }
-  
-    #container.ytd-masthead,
-    #header.ytd-app {
-      padding: 0 21px;
-    }
-    `;
 
     if (settings.ytLogoSubsPage) {
         let logo, command;
