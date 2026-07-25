@@ -157,4 +157,14 @@ ytTweaks.tweaks.push(function (settings) {
             }
         };
     }
+
+    if (settings.hideSearchBar) {
+        const scope = settings.hideSearchBarWatchOnly ? '#masthead[is-watch-page] ' : '';
+
+        ytTweaks.sheet.textContent += `
+        ${scope}#center.ytd-masthead {
+          display: none !important;
+        }
+        `;
+    }
 });
